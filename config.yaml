@@ -1,0 +1,230 @@
+port: 7890
+socks-port: 1080
+allow-lan: false
+ipv6: true
+mode: Rule
+log-level: silent
+external-controller: 127.0.0.1:9090
+dns:
+  # 启动TAP模式,使用clash建立dns服务
+  enable: true
+  ipv6: false
+  listen: "0.0.0.0:53"
+  # 选择fake-ip/redir-host模式
+  enhanced-mode: redir-host
+  nameserver:
+    - "tls://223.5.5.5:853"
+    - "https://223.5.5.5/dns-query"
+  fallback:
+    - 114.114.114.114
+    - "tcp://223.5.5.5"
+  fallback-filter:
+    geoip: true
+    ipcidr:
+      - 240.0.0.0/4
+  # fake ip过滤，以下地址不会进行fakeip映射
+  fake-ip-filter:
+    - +.stun.*.*
+    - +.stun.*.*.*
+    - +.stun.*.*.*.*
+    - +.stun.*.*.*.*.*
+    - "*.n.n.srv.nintendo.net"
+    - +.stun.playstation.net
+    - xbox.*.*.microsoft.com
+    - "*.*.xboxlive.com"
+    - "*.msftncsi.com"
+    - "*.msftconnecttest.com"
+  # 是否查询配置中的hosts
+  use-hosts: true
+  # 是否查询系统配置中的hosts
+  use-system-hosts: true
+
+# 配置节点,即自己的节点
+proxies:
+  - name: proxy-example
+    type: trojan
+    server: url
+    port: 443
+    password: password
+    udp: true
+    sni: sni
+    skip-cert-verify: true
+
+# 配置策略组
+proxy-groups:
+  - name: 🥷PROXY
+    type: select
+    proxies:
+      - proxy-example
+      - DIRECT
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+  - name: 👆SELECT
+    type: select
+    proxies:
+      - 🥷PROXY
+      - DIRECT
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+  - name: 🎎YouTube
+    type: select
+    proxies:
+      - 🥷PROXY
+      - 👆SELECT
+      - DIRECT
+
+  - name: 📽Netflix
+    type: select
+    proxies:
+      - 🥷PROXY
+      - 👆SELECT
+      - DIRECT
+
+  - name: 🤖OpenAI
+    type: select
+    proxies:
+      - 🥷PROXY
+      - 👆SELECT
+      - DIRECT
+
+  - name: 🔍Bing
+    type: select
+    proxies:
+      - 🥷PROXY
+      - 👆SELECT
+      - DIRECT
+
+  - name: 🚅Google
+    type: select
+    proxies:
+      - 🥷PROXY
+      - 👆SELECT
+      - DIRECT
+
+  - name: 🛀Bilibiliintl
+    type: select
+    proxies:
+      - 🥷PROXY
+      - 👆SELECT
+      - DIRECT
+
+  - name: 🦤Twitter
+    type: select
+    proxies:
+      - 🥷PROXY
+      - 👆SELECT
+      - DIRECT
+
+  - name: 🐈GitHub
+    type: select
+    proxies:
+      - 🥷PROXY
+      - 👆SELECT
+      - DIRECT
+
+  - name: 🚦AD
+    type: select
+    proxies:
+      - REJECT
+      - DIRECT
+      - 🥷PROXY
+
+# 导入在线规则集
+rule-providers:
+  reject: # 广告域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/reject.txt"
+    interval: 86400
+
+  icloud: # iCloud域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/icloud.txt"
+    interval: 86400
+
+  apple: # Apple域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/apple.txt"
+    interval: 86400
+
+  google: # Google域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/google.txt"
+    interval: 86400
+
+  proxy: # 代理域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/proxy.txt"
+    interval: 86400
+
+  direct: # 直连域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/direct.txt"
+    interval: 86400
+
+  private: # 私有网络专用域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/private.txt"
+    interval: 86400
+
+  gfw: # GFW域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/gfw.txt"
+    interval: 86400
+
+  tld-not-cn: # 非中国顶级域名列表
+    type: http
+    behavior: domain
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/tld-not-cn.txt"
+    interval: 86400
+
+  telegramcidr: # Telegram IP段列表
+    type: http
+    behavior: ipcidr
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/telegramcidr.txt"
+    interval: 86400
+
+  cncidr: # 中国IP段列表
+    type: http
+    behavior: ipcidr
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/cncidr.txt"
+    interval: 86400
+
+  lancidr: # 本地IP段列表
+    type: http
+    behavior: ipcidr
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/lancidr.txt"
+    interval: 86400
+
+  applications: # 需要直连的常见软件列表
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/applications.txt"
+    interval: 86400
+
+# 添加自定义规则
+rules:
+  - RULE-SET,applications,DIRECT
+  - RULE-SET,private,DIRECT
+  - RULE-SET,reject,🚦AD
+  - RULE-SET,icloud,DIRECT #
+  - RULE-SET,apple,DIRECT # 这三个为国内可直连地址，如果希望走代理改为🥷PROXY
+  - RULE-SET,google,🚅Google #
+  - RULE-SET,tld-not-cn,🥷PROXY
+  - RULE-SET,gfw,🥷PROXY
+  - RULE-SET,telegramcidr,🥷PROXY
+  - RULE-SET,lancidr,DIRECT
+  - RULE-SET,cncidr,DIRECT
+  - GEOIP,CN,DIRECT
+  - RULE-SET,direct,DIRECT
+  - RULE-SET,proxy,🥷PROXY
+  - MATCH,👆SELECT # ⭐️⭐️规则之外的，在这里来修改是白名单模式还是黑名单模式，具体在“👆SELECT”选择代理或直连。
