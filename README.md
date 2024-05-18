@@ -10,7 +10,7 @@ parsers示例如下：
   - url: https://raw.githubusercontent.com/genIoco/clash-rules/main/config.yaml
     yaml:
       prepend-proxies:
-        - name: 自己的节点
+        - name: node
           server: url
           type: trojan
           port: 443
@@ -19,7 +19,7 @@ parsers示例如下：
           sni: sni
           skip-cert-verify: true
       mix-proxy-providers:
-        自己的机场:
+        providers1:
           type: http
           url: 订阅链接
           interval: 86400
@@ -27,8 +27,12 @@ parsers示例如下：
           format: yaml
 
       commands:
-        # 删除样例节点
+        # 删除样例node
         - proxies.proxy-example-
         - proxy-groups.🥷PROXY.proxies.0-
+        
+        # 添加自己的node和providers
+        - proxy-groups.🥷PROXY.proxies.0+node
+        - proxy-groups.🥷PROXY.use.0=providers1
 ```
 
