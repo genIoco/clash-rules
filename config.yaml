@@ -213,8 +213,11 @@ rule-providers:
 
 # 添加自定义规则
 rules:
-  - RULE-SET,applications,DIRECT
+  - RULE-SET,direct,DIRECT
   - RULE-SET,private,DIRECT
+  - GEOIP,CN,DIRECT
+  - RULE-SET,lancidr,DIRECT
+  - RULE-SET,cncidr,DIRECT
   - RULE-SET,reject,🚦AD
   - RULE-SET,icloud,DIRECT #
   - RULE-SET,apple,DIRECT # 这三个为国内可直连地址，如果希望走代理改为🥷PROXY
@@ -222,9 +225,6 @@ rules:
   - RULE-SET,tld-not-cn,🥷PROXY
   - RULE-SET,gfw,🥷PROXY
   - RULE-SET,telegramcidr,🥷PROXY
-  - RULE-SET,lancidr,DIRECT
-  - RULE-SET,cncidr,DIRECT
-  - GEOIP,CN,DIRECT
-  - RULE-SET,direct,DIRECT
   - RULE-SET,proxy,🥷PROXY
+  - RULE-SET,applications,DIRECT
   - MATCH,👆SELECT # ⭐️⭐️规则之外的，在这里来修改是白名单模式还是黑名单模式，具体在“👆SELECT”选择代理或直连。
