@@ -68,6 +68,14 @@ proxy-groups:
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
+  - name: 📬WeChat
+    type: select
+    proxies:
+      - 🥷PROXY
+      - DIRECT
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
   - name: 🎎YouTube
     type: select
     proxies:
@@ -211,10 +219,16 @@ rule-providers:
     url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/applications.txt"
     interval: 86400
 
+  wechat: # 微信域名列表
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/genIoco/clash-rules/main/rule-providers/wechat.txt"
+    interval: 86400
+
 # 添加自定义规则
 rules:
-  - RULE-SET,direct,DIRECT
   - RULE-SET,private,DIRECT
+  - RULE-SET,wechat,📬WeChat
   - GEOIP,CN,DIRECT
   - RULE-SET,lancidr,DIRECT
   - RULE-SET,cncidr,DIRECT
@@ -227,4 +241,5 @@ rules:
   - RULE-SET,telegramcidr,🥷PROXY
   - RULE-SET,proxy,🥷PROXY
   - RULE-SET,applications,DIRECT
+  - RULE-SET,direct,DIRECT
   - MATCH,👆SELECT # ⭐️⭐️规则之外的，在这里来修改是白名单模式还是黑名单模式，具体在“👆SELECT”选择代理或直连。

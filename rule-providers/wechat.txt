@@ -1,0 +1,8 @@
+payload:
+  - DOMAIN-SUFFIX,weixin.qq.com
+  - DOMAIN-SUFFIX,wx.qq.com
+  - DOMAIN-KEYWORD,weixin
+  - DOMAIN-KEYWORD,wechat
+  - DOMAIN-KEYWORD,wx
+  - PROCESS-NAME,wechat.exe
+  - PROCESS-NAME,WeChatPlayer.exe
