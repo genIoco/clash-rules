@@ -229,6 +229,7 @@ rule-providers:
 rules:
   - RULE-SET,private,DIRECT
   - RULE-SET,wechat,📬WeChat
+  - RULE-SET,applications,DIRECT
   - GEOIP,CN,DIRECT
   - RULE-SET,lancidr,DIRECT
   - RULE-SET,cncidr,DIRECT
