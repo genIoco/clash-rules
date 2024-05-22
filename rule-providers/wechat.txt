@@ -1,6 +1,7 @@
 payload:
   - DOMAIN-SUFFIX,weixin.qq.com
   - DOMAIN-SUFFIX,wx.qq.com
+  - DOMAIN-SUFFIX,qpic.cn
   - DOMAIN-KEYWORD,weixin
   - DOMAIN-KEYWORD,wechat
   - DOMAIN-KEYWORD,wx
