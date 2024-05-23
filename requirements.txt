@@ -1,0 +1,1 @@
+wechatpy[cryptography]>=1.8.18
