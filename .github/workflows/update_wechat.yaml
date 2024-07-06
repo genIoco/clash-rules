@@ -1,0 +1,72 @@
+name: "Update Wechat IP List"
+
+on:
+  schedule:
+    - cron: "0 3 * * *"
+  # Allows you to run this workflow manually from the Actions tab or through HTTP API
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: "SSH connection to Actions"
+        required: false
+        default: "false"
+
+jobs:
+  sync:
+    name: "Update Wechat IP List"
+    runs-on: ubuntu-latest
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CI_TOKEN }}
+          submodules: true
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "pip"
+          cache-dependency-path: "**/requirements.txt"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
+      - name: SSH connection to Actions
+        uses: P3TERX/ssh2actions@v1.0.0
+        if: (github.event.inputs.ssh == 'true' && github.event.inputs.ssh  != 'false') || contains(github.event.action, 'ssh')
+        env:
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+
+      # Update references
+      - name: Update Wechat IP List
+        env:
+            APPID: ${{ secrets.APPID }}
+            APPSECRET: ${{ secrets.APPSECRET }}
+        run: |
+          python3 ./scripts/get_wechat_ips.py
+
+      - name: Commit update
+        run: |
+          git config --global user.name 'Git bot'
+          git config --global user.email 'bot@noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "✨ feat(wechat.txt): 更新微信服务器ip" && git push || echo "No changes to commit"
