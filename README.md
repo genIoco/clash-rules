@@ -148,6 +148,7 @@ function main(config, profileName) {
   //-------------------------------------------插入自定义 proxies 和 proxies provider END
 
   config["proxy-groups"][0]["include-all-providers"] = true
+  config["proxy-groups"][1].proxies.push("Azure")
 
   //-------------------------------------------空检测
   if (proxyCount === 0 && proxyProviderCount === 0) {
